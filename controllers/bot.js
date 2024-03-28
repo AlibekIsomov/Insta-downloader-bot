@@ -8,14 +8,46 @@ const token = '6868850706:AAH1HHn94duOexsrw0RDDzYu7rd6UP7rIVE'
 // Create a bot that uses 'polling' to fetch new updates
 const bot = new TelegramBot(token, { polling: true });
 
+const password = "admin123";
+
+// Listen for the /start command
 bot.onText(/\/start/, (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, "Send me any Instagram link(except for stories) below and I'll send it back to you as a media file");
+    const chatId = msg.chat.id;
+    
+    // Send a message asking for the password
+    bot.sendMessage(chatId, "Please enter the password:");
 });
 
-const channelUsername = '@xasdxasdasd'; // Replace with your channel username
+// Listen for messages
+bot.on('message', (msg) => {
+    const chatId = msg.chat.id;
+    const text = msg.text;
 
-const caption = 'This is a photo of a beautiful sunset.';
+    // Check if the received message matches the password
+    if (text === password) {
+        // If the password is correct, send the instruction message
+        bot.sendMessage(chatId, "Password accepted. Send me any Instagram link (except for stories) below and I'll send it back to you as a media file");
+    } else {
+        // If the password is incorrect, notify the user
+        bot.sendMessage(chatId, "Incorrect password. Please try again.");
+    }
+});
+
+const channelUsername = '@sxf_qarshimall'; // Replace with your channel username
+
+const caption = `Siz SXF QARSHI MALL savdo markazidan o’zingiz istagan narsani topishingiz mumkin! 
+
+🛒 Qashqadaryodagi eng yirik savdo majmualaridan biri
+🛍️ 100 dan ortiq ko'p brendli do'konlar
+🎳 Farzandlaringiz uchun o'yin-kulgi
+🍔 Oziq-ovqat 
+
+📌 Ish vaqti har kuni 9:00 dan 23:00 gacha 
+
+📲+ 998 (88) 674 11 11
+
+Manzil: Qarshi shahri, A. Navoiy ko’chasi, 27`;
+
 bot.on('message', async (msg) => {
   if (msg.text !== '/start' && msg.text.includes('https://www.instagram.com/')) {
     try {
