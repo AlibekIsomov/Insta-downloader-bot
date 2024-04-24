@@ -9,12 +9,12 @@ const token = '6868850706:AAH1HHn94duOexsrw0RDDzYu7rd6UP7rIVE'
 const bot = new TelegramBot(token, { polling: true });
 
 const password = "admin123";
+const awaitingPassword = new Map(); // This will store whether a user is currently expected to enter a password
 
 // Listen for the /start command
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
-    
-    // Send a message asking for the password
+    awaitingPassword.set(chatId, true); // Set this user as awaiting a password
     bot.sendMessage(chatId, "Please enter the password:");
 });
 
@@ -23,14 +23,17 @@ bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;
 
-    // Check if the received message matches the password
-    if (text === password) {
-        // If the password is correct, send the instruction message
-        bot.sendMessage(chatId, "Password accepted. Send me any Instagram link (except for stories) below and I'll send it back to you as a media file");
-    } else {
-        // If the password is incorrect, notify the user
-        bot.sendMessage(chatId, "Incorrect password. Please try again.");
+    // Check if this user has just been asked for a password
+    if (awaitingPassword.get(chatId)) {
+        // Check if the received message is the password
+        if (text === password) {
+            awaitingPassword.set(chatId, false); // Reset the password awaiting state
+            bot.sendMessage(chatId, "Password accepted. Send me any Instagram link (except for stories) below and I'll send it back to you as a media file.");
+        } else {
+            bot.sendMessage(chatId, "Incorrect password. Please try again.");
+        }
     }
+    // If not awaiting password, the bot can handle other commands or ignore the messages
 });
 
 const channelUsername = '@sxf_qarshimall'; // Replace with your channel username
@@ -38,7 +41,7 @@ const channelUsername = '@sxf_qarshimall'; // Replace with your channel username
 const caption = `Siz SXF QARSHI MALL savdo markazidan o’zingiz istagan narsani topishingiz mumkin! 
 
 🛒 Qashqadaryodagi eng yirik savdo majmualaridan biri
-🛍️ 100 dan ortiq ko'p brendli do'konlar
+🛍️ 100 dan ortiq ko'p brendli do'konlar 
 🎳 Farzandlaringiz uchun o'yin-kulgi
 🍔 Oziq-ovqat 
 
