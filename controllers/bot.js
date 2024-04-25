@@ -15,7 +15,7 @@ const awaitingPassword = new Map(); // This will store whether a user is current
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
     awaitingPassword.set(chatId, true); // Set this user as awaiting a password
-    bot.sendMessage(chatId, "Please enter the password:");
+    bot.sendMessage(chatId, "Please enter the password:");  
 });
 
 // Listen for messages
@@ -33,7 +33,7 @@ bot.on('message', (msg) => {
             bot.sendMessage(chatId, "Incorrect password. Please try again.");
         }
     }
-    // If not awaiting password, the bot can handle other commands or ignore the messages
+    return;
 });
 
 const channelUsername = '@sxf_qarshimall'; // Replace with your channel username
